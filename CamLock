@@ -1,0 +1,81 @@
+local ScreenGui = Instance.new("ScreenGui")
+local MainFrame = Instance.new("Frame")
+local TextBox = Instance.new("TextBox")
+local Button = Instance.new("TextButton")
+local BlurEffect = Instance.new("BlurEffect")
+
+ScreenGui.Parent = game.CoreGui
+
+MainFrame.Name = "MainFrame"
+MainFrame.Parent = ScreenGui
+MainFrame.BackgroundColor3 = Color3.new(0.1, 0.1, 0.1)
+MainFrame.BorderSizePixel = 0
+MainFrame.Position = UDim2.new(0.85, 0, 0.05, 0)
+MainFrame.Size = UDim2.new(0.1, 0, 0.1, 0)
+MainFrame.Visible = true
+
+TextBox.Name = "SetPrediction"
+TextBox.Parent = MainFrame
+TextBox.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+TextBox.BorderSizePixel = 0
+TextBox.Position = UDim2.new(0.1, 0, 0.1, 0)
+TextBox.Size = UDim2.new(0.8, 0, 0.3, 0)
+TextBox.Text = "Enter Prediction"
+TextBox.TextColor3 = Color3.new(1, 1, 1)
+TextBox.ClearTextOnFocus = true
+
+Button.Name = "LockButton"
+Button.Parent = MainFrame
+Button.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
+Button.BorderSizePixel = 0
+Button.Position = UDim2.new(0.1, 0, 0.5, 0)
+Button.Size = UDim2.new(0.8, 0, 0.3, 0)
+Button.Text = "brshx.lua"
+Button.TextColor3 = Color3.new(1, 1, 1)
+
+BlurEffect.Size = 24
+BlurEffect.Parent = game.Lighting
+
+local function displayBlur()
+    BlurEffect.Enabled = true
+    local BlurMessage = Instance.new("TextLabel")
+    BlurMessage.Parent = ScreenGui
+    BlurMessage.Text = "Made By .5ior Discord\nallahservent123 owns this script"
+    BlurMessage.TextScaled = true
+    BlurMessage.Size = UDim2.new(1, 0, 1, 0)
+    BlurMessage.BackgroundTransparency = 1
+    BlurMessage.TextColor3 = Color3.new(1, 1, 1)
+    wait(0.9)
+    BlurMessage:Destroy()
+    BlurEffect.Enabled = false
+end
+
+local function lockOntoNearest()
+    local nearestPlayer = nil
+    local shortestDistance = math.huge
+    local playerPosition = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
+
+    for _, player in pairs(game.Players:GetPlayers()) do
+        if player ~= game.Players.LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            local targetPosition = player.Character.HumanoidRootPart.Position
+            local distance = (targetPosition - playerPosition).Magnitude
+
+            if distance < shortestDistance then
+                shortestDistance = distance
+                nearestPlayer = player
+            end
+        end
+    end
+
+    if nearestPlayer then
+        local prediction = tonumber(TextBox.Text) or 0
+        print("Locking onto:", nearestPlayer.Name, "with prediction:", prediction)
+    else
+        print("No valid targets found.")
+    end
+end
+
+Button.MouseButton1Click:Connect(function()
+    displayBlur()
+    lockOntoNearest()
+end)
